@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#08090c">
+  <meta name="color-scheme" content="dark">
+  <meta name="referrer" content="no-referrer">
+  <title>五疑戦 | 5人制オンライン心理戦</title>
+  <meta name="description" content="5人固定・15ターンのオンライン心理戦カードゲーム『五疑戦』。嘘、同盟、裏切り、偵察、告発で勝ち残れ。">
+  <meta property="og:title" content="五疑戦 | 5人制オンライン心理戦">
+  <meta property="og:description" content="信じるか、疑うか。5人固定・15ターンのオンライン心理戦。">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css?v=20260912invitefix1">
+</head>
+<body>
+<div class="noise" aria-hidden="true"></div>
+<main>
+  <section id="home" class="screen active">
+    <div class="hero">
+      <div class="heroSeal" aria-hidden="true"></div>
+      <div class="eyebrow"><span>FIVE PLAYERS</span><i></i><span>15 TURNS</span><i></i><span>PSYCHOLOGICAL WAR</span></div>
+      <h1>五疑戦</h1>
+      <div class="submark">GOGI <span>—</span> FIVE DOUBTS, ONE VICTOR</div>
+      <p class="lead">信じるか、疑うか。嘘・同盟・裏切りが勝敗を変える。</p>
+      <div class="homeCard glass">
+        <div class="homeStatus" aria-label="ゲーム概要"><span class="liveDot" aria-hidden="true"></span><span>オンライン対戦</span><b>5人で開始</b></div>
+        <button id="publicMatch" class="primary big">公開マッチを探す</button>
+        <button id="openRules" class="rulesLink" type="button">遊び方・ルールを見る</button>
+        <div class="sep"><span>友達と遊ぶ</span></div>
+        <div class="row2">
+          <button id="createPrivate" class="ghost">部屋を作る</button>
+          <button id="showJoin" class="ghost">コードで参加</button>
+        </div>
+        <div id="joinBox" class="joinBox hidden">
+          <input id="codeInput" maxlength="8" inputmode="url" lang="en" placeholder="8文字コード" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" enterkeyhint="go" pattern="[A-HJ-NP-Z2-9]{8}" aria-label="ルームコード">
+          <button id="joinPrivate" class="primary">参加</button>
+        </div>
+        <p class="fine">登録不要 / 無料 / 日本語のみ / テキストチャット</p>
+      </div>
+      <div class="ruleChips"><span>5人固定</span><span>15ターン</span><span>会話＋選択10分</span><span>結果1分</span></div>
+      <div class="howTo" aria-label="ゲームの流れ">
+        <div><b>01</b><span>5人集まる</span><small>5人揃うと自動で対戦開始</small></div>
+        <div><b>02</b><span>10分で探り、決める</span><small>会話・取引・ブラフ・カード選択を同時進行</small></div>
+        <div><b>03</b><span>結果を1分確認</span><small>全員が次へならすぐ次ターン</small></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="lobby" class="screen">
+    <header class="topbar">
+      <div><span class="brand">五疑戦</span><span class="muted">待機室</span></div>
+      <div class="topActions"><span class="connectionState" data-connection-state="offline">接続待ち</span><button id="copyCode" class="codeBtn hidden" type="button"></button></div>
+    </header>
+    <div class="centerPanel glass">
+      <div class="spinner" aria-hidden="true"></div>
+      <h2 id="lobbyTitle">プレイヤーを待っています</h2>
+      <div id="lobbyPlayers" class="lobbyPlayers" aria-label="参加人数"></div>
+      <p id="lobbyNote" class="muted">5人揃うと自動で開始します。</p>
+      <div class="lobbyInviteActions">
+        <button id="shareRoom" class="primary hidden" type="button">友達を招待</button>
+        <button id="leaveLobby" class="ghost leaveBtn" type="button">待機をやめる</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="game" class="screen portraitGame">
+    <header class="portraitHud">
+      <div class="hudLeft glass">
+        <div class="hudIdentity"><span id="myColor" class="myColor">—</span><span>HP <b id="myHp">5</b></span><span>ポイント <b id="myPoints">0</b>P</span></div>
+        <div id="standingStat" class="hudRank hidden"><span>順位</span><b id="myStanding">—</b><small id="aliveCount">生存者5人</small></div>
+        <div class="hudTools">
+          <button type="button" data-tool-target="inventory">購入</button>
+          <button type="button" data-tool-target="transfer">取引</button>
+          <button type="button" data-tool-target="contractBox">公開契約</button>
+          <button type="button" data-tool-target="winnerBetBox">1位予想</button>
+          <button type="button" data-tool-target="scoutBox">偵察履歴</button>
+        </div>
+      </div>
+
+      <div class="hudTitle" aria-label="五疑戦"><span>五疑戦</span><div class="audioToggles" aria-label="サウンド設定"><button id="sfxToggle" type="button" aria-pressed="true">SE ON</button></div><button id="openRulesGame" class="floatingRules hudRules" type="button" aria-label="ルールを開く">?</button></div>
+
+      <div class="hudRight glass">
+        <span id="turnLabel" class="turn">第1/15ターン</span>
+        <div class="phaseBox"><span id="phaseLabel">会話制限時間</span><strong id="timer">10分00秒</strong></div>
+        <div class="hudObjective"><span>秘密目標</span><b id="myObjective">—</b><small id="objectiveDesc"></small><em id="objectiveState"></em></div>
+        <span class="connectionState" data-connection-state="online">接続中</span>
+      </div>
+    </header>
+
+    <div id="reconnectBanner" class="reconnectBanner hidden" role="status" aria-live="polite"><b>通信を再接続しています</b><span>この画面を閉じずにそのままお待ちください。</span></div>
+    <div id="afkWarningBanner" class="afkWarningBanner hidden" role="alert" aria-live="assertive"><b>AFK警告</b><span>2ターン連続で操作がありません。次のターンも無操作の場合は脱落します。</span></div>
+
+    <div class="mobileStatus hidden" aria-hidden="true"><span id="mobileColor">—</span><span id="mobileHp">5</span><span id="mobilePoints">0</span><span id="mobileStandingWrap" class="hidden"><b id="mobileStanding">—</b><small id="mobileAlive">生存5人</small></span></div>
+
+    <div class="gameGrid portraitGrid">
+      <aside class="leftCol hiddenState" aria-hidden="true">
+        <div class="glass playersCard"><div class="sectionTitle">プレイヤー</div><div id="playersList"></div></div>
+      </aside>
+
+      <section class="centerCol portraitCenter">
+        <div id="chatPanel" class="glass chatPanel portraitChat">
+          <div class="chatTop">
+            <div><b>チャット</b></div>
+            <select id="chatTarget" aria-label="チャット相手"><option value="">全体チャット</option></select>
+          </div>
+          <button id="chatNotice" class="chatNotice hidden" type="button" aria-live="polite"></button>
+          <button id="gameNotice" class="gameNotice hidden" type="button" aria-live="polite"></button>
+          <div id="messages" class="messages" aria-live="polite"></div>
+          <form id="chatForm" class="chatInput"><input id="chatInput" maxlength="300" placeholder="メッセージを入力…" autocomplete="off"><button type="submit">送信</button></form>
+        </div>
+
+        <div id="draftPanel" class="glass draftPanel portraitCards">
+          <div id="draftComposer"></div>
+          <div class="commitRow"><button id="readyBtn" class="readyBtn" type="button">次へ</button><div id="readyCount" class="phaseCount">次へ 0/5</div></div>
+        </div>
+
+        <div id="resultPanel" class="glass resultPanel hidden"><div class="resultPulse"></div><h2 id="resultTitle">ターン結果</h2><div class="resultClock">残り <b id="resultTimer">1分00秒</b></div><div id="resultSummary" class="resultSummary"></div><button id="resultNextBtn" class="primary big resultNextBtn" type="button">次へ</button><div id="resultReadyCount" class="phaseCount">次へ 0/5</div></div>
+      </section>
+
+      <aside class="rightCol" id="toolDrawer">
+        <button id="toolClose" class="toolClose" type="button">閉じる ×</button>
+        <div class="glass inventory"><div class="sectionTitle">購入</div><div id="inventory"></div></div>
+        <div class="glass transfer"><div class="sectionTitle">交換</div><div id="tradeBox"></div></div>
+        <div class="glass contractBox"><div class="sectionTitle">公開契約</div><div id="contractControls"></div></div>
+        <div class="glass winnerBetBox"><div class="sectionTitle">1位予想</div><div id="winnerBetControls"></div></div>
+        <div class="glass scoutBox"><div class="sectionTitle">偵察履歴</div><div class="scoutPrivacy">何ターン目に誰を偵察し、何が分かったかを確認できます。</div><div id="scoutReports"></div></div>
+        <details id="previousResultCard" class="glass previousResult hidden"><summary><span>直前の結果</span><b id="previousResultTurn">—</b></summary><div id="previousResultSummary" class="previousResultSummary"></div></details>
+      </aside>
+    </div>
+
+  </section>
+
+  <section id="finish" class="screen">
+    <div class="finishWrap">
+      <div class="eyebrow">ゲーム終了</div>
+      <h1>五疑戦</h1>
+      <div id="preBetStage" class="finalStage"><h2>第1順位発表｜賭け判定前順位</h2><div id="preBetRanking" class="ranking"></div></div>
+      <div id="postBetStage">
+        <div class="finalStage betStage"><h2>1位予想結果｜全員公開</h2><div id="winnerBetResults" class="betResults"></div></div>
+        <div class="finalStage finalRankingStage"><h2>第2順位発表｜最終順位</h2><div id="ranking" class="ranking"></div></div>
+        <button id="backHome" class="primary big" type="button">トップへ戻る</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<dialog id="inviteDialog" class="inviteDialog">
+  <div class="inviteHead"><div><b>友達を招待</b><span>PRIVATE ROOM</span></div><button id="closeInvite" type="button" aria-label="閉じる">×</button></div>
+  <div class="inviteBody">
+    <p class="inviteCaption">このリンクを送ると、ルームコードが自動入力されます。</p>
+    <div class="inviteCodeRow"><span>ルームコード</span><b id="inviteRoomCode">--------</b></div>
+    <label class="inviteLinkLabel" for="inviteRoomLink">招待リンク</label>
+    <input id="inviteRoomLink" class="inviteRoomLink" type="text" readonly autocomplete="off">
+    <div class="inviteButtons">
+      <button id="inviteNativeShare" class="primary" type="button">共有する</button>
+      <button id="inviteCopyLink" class="ghost" type="button">リンクをコピー</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="rulesDialog" class="rulesDialog">
+  <div class="rulesHead"><div><b>五疑戦</b><span>ルール</span></div><button id="closeRules" type="button" aria-label="閉じる">×</button></div>
+  <div class="rulesBody">
+    <p><b>5人固定・15ターン。</b> 5人のプレイヤーが揃うと自動で開始します。最終ポイントが最も高いプレイヤーが勝利。HPは5、0で脱落、復活なし。他人のポイントと秘密目標は試合中非公開。</p>
+    <h3>1ターン</h3><ol><li>会話・行動選択：最大10分。チャットしながら通常カード・特殊カード・対象を選択できます。</li><li>全生存プレイヤーが「次へ」を押すと10分を待たず同時処理します。</li><li>結果発表：最大1分。接続中の人間全員が「次へ」を押すと1分を待たず次ターンへ進みます。</li></ol><p><b>放置対策：</b>2ターン連続で一切操作がない場合は警告。3ターン連続で無操作の場合は自動脱落。カード指定を受けて指定カードを所持している場合、タイムアウトしても指定カードは自動で使用され、必要な対象等が未選択ならサーバーが自動補完します。</p>
+    <h3>通常カード</h3><ul><li><b>攻撃</b>：1ダメージ。防御を上回ってダメージが発生すると攻撃成功+10P。</li><li><b>防御</b>：自分または他の生存者1人を選び、その人への攻撃力1を防ぐ。実際に1以上防いだ場合は、防御カードを使った本人に防御成功+10P。</li><li><b>偵察</b>：生存者・脱落者を問わず、自分以外の相手のHP・キル数・通常カード種類/枚数を自分だけ確認。特殊カード・ポイント・秘密目標は見えない。</li><li><b>告発</b>：相手の秘密目標を当てる。成功+25P、失敗-10P。成功時は対象の秘密目標を無効化。</li><li><b>回復</b>：自分または生存中の相手1人のHP+2（最大5）。</li></ul>
+    <h3>特殊カード</h3><ul><li><b>完全防御</b>：自分への全攻撃を防ぎ、攻撃者人数×5P。他人には使用できない。</li><li><b>無効</b>：指定相手のそのターンの通常/特殊行動を無効化。</li><li><b>カード指定</b>：相手の次ターン通常カードを指定。異なる指定が同時に競合すると対象は次ターン行動なし。</li><li><b>ポイント泥棒</b>：5〜25Pを指定して奪う。同じ相手への同時泥棒は5P単位で公平配分。</li><li><b>2倍カード</b>：攻撃2回（同一/別対象可） / 防御2回分 / 偵察2人 / 告発2回 / 回復+4。</li></ul>
+    <h3>会話中にできること</h3><p>全体/個別チャット、カード購入、交換、公開契約、行動選択。ポイント譲渡・カード譲渡の独立機能は廃止し、プレイヤー間の資産移動は交換を使います。交換は双方ともポイント0P・カード0枚を選択でき、片側だけ資産を出す提案も相手が承認すれば成立します。両側とも0P・0枚だけの空交換はできません。交換・公開契約はいずれもターンを消費しません。同盟・嘘・ブラフ・裏切りはゲーム上の戦術として自由。</p>
+    <h3>購入価格</h3><p>攻撃15P / 防御15P / 偵察15P / 告発25P / 回復35P / 特殊カード（ランダム）45P。通常カード購入は1ターンの回数制限なし、特殊カード購入は1試合1回。</p>
+    <h3>主な得点</h3><p>攻撃成功+10P / 防御成功+10P / 告発成功+25P / 告発失敗-10P / 秘密目標+25P / 15ターン生存+50P。単独キル・共同キルの得点はありません。第15ターンは攻撃成功・防御成功・告発成功・告発失敗・完全防御などの得点/減点が2倍。秘密目標+25Pと生存+50P、ポイント泥棒や交換によるポイント移動は2倍対象外。第5ターン開始時+5P、第10ターン開始時+10P、第15ターン開始時+15Pをその時点の生存者へ固定付与します。第15ターン開始の+15Pも2倍になりません。第15ターン終了まで生存したプレイヤーには+50Pを固定付与し、これも2倍対象外です。</p>
+    <details class="objectiveRules"><summary><b>秘密目標10種を見る</b></summary><ol>
+      <li><b>観察者</b>：3ターン連続で偵察</li><li><b>追跡者</b>：同じ1人を5回偵察</li><li><b>賭け師</b>：告発相手を一度も偵察せず、その相手への告発成功</li><li><b>殺人鬼</b>：3ターン連続で攻撃</li><li><b>死神</b>：同じ1人を5回攻撃</li><li><b>鉄壁</b>：防御を3回成功</li><li><b>耐久者</b>：回復未使用</li><li><b>瀕死</b>：累計5ダメージ以上を受けて生存</li><li><b>無防備</b>：防御未使用</li><li><b>隠者</b>：特殊カード未使用</li>
+    </ol><p class="rulesNote">耐久者・無防備・隠者は、第15ターンまで生存して未使用、または何ターン目でも未使用のまま脱落した時点で達成。</p></details>
+    <h3>公開契約</h3><p>第1〜14ターンに、25P刻みで契約ポイントを預けて全員に見える公開契約を件数制限なく提示できます。同じターンに複数件・同時に複数件の提示も可能です。25Pなら達成者1人につき5P、50Pなら1人10P、75Pなら1人15Pというように、契約ポイント÷5を達成した参加者それぞれへ配布します。複数人が参加でき、参加しなかった人・未達成者の分など配り切らずに余ったポイントは契約を出した色へ返却されます。条件は「指定した色を攻撃」「契約を出した色を攻撃しない」「契約を出した色へ防御カードを使う」「指定した色を告発」の4種類。告発契約は告発の成功・失敗に関係なく、指定した色へ有効な告発を実行すれば達成。参加者が1人以上いれば次ターン終了時に自動判定。参加者0人なら全額返却。</p>
+    <h3>1位予想</h3><p>第3・6・9ターンのいずれかで1試合1回だけ、最終的に1位になるプレイヤーを予想して5P刻みで所持Pの範囲内なら上限なく賭けられます。賭けたPはその場で差し引かれます。第3ターンは10倍、第6ターンは5倍、第9ターンは2.5倍。まず払戻し前順位で予想を判定し、その後に払戻しを加えて最終順位を再計算します。試合中は誰に・何P・何ターンで賭けたかを本人以外へ公開しません。試合終了時に全員の予想相手・賭けP・賭けターン・倍率・的中/外れ・払戻し額を全員へ公開します。最終順位には払戻し後のポイントが反映されます。</p>
+    <h3>勝敗</h3><p>同点時は、キル数 → 告発成功数 → 有効な秘密目標達成数 → 生存ターン数 → 残りHP の順で判定。すべて同じなら同順位。</p>
+    <p class="rulesNote">詳細な秘密目標・得点・特殊処理はサーバー側の正式ルールに従います。</p>
+  </div>
+</dialog>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/app.js?v=20260912leaveackrestore1"></script>
+</body>
+</html>
