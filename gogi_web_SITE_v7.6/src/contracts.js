@@ -3,10 +3,10 @@
 function validContractStake(stake, availablePoints = Infinity) {
   const n = Number(stake);
   const max = Number(availablePoints);
-  return Number.isInteger(n) && n >= 25 && n % 25 === 0 && (!Number.isFinite(max) || n <= max);
+  return Number.isInteger(n) && n >= 20 && n % 20 === 0 && (!Number.isFinite(max) || n <= max);
 }
 function contractRewardPerPlayer(stake) {
-  return validContractStake(stake) ? Number(stake) / 5 : 0;
+  return validContractStake(stake) ? Number(stake) / 4 : 0;
 }
 function contractSettlement(stake, successCount) {
   const total = Number(stake);

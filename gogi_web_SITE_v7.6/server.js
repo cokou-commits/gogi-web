@@ -1649,7 +1649,7 @@ io.on('connection', socket => {
     if (!phaseSeqMatches(room, p, phaseSeq) || p.ready) return safeCb(cb, { ok:false, message:'準備OKを解除し、最新画面から契約してください。' });
     if (!Array.isArray(room.publicContracts)) room.publicContracts = [];
     const n = Number(reward);
-    if (!validContractStake(n, p.points)) return safeCb(cb, { ok:false, message:'契約ポイントは所持P以内の25P刻みで指定してください。' });
+    if (!validContractStake(n, p.points)) return safeCb(cb, { ok:false, message:'契約ポイントは所持P以内の20P刻みで指定してください。' });
     const kind = cleanText(conditionType, 32);
     let subject = null;
     if (kind === 'attackTarget' || kind === 'accuseTarget') {
@@ -1669,8 +1669,8 @@ io.on('connection', socket => {
         : kind === 'defendIssuer'
           ? `次ターンに${p.color.label}へ防御カードを使う`
           : `次ターンに${subject.color.label}へ告発する（成功・失敗どちらでも可）`;
-    log(room, `公開契約：${p.color.label}が「${condition}」契約${n}P（達成者1人${n/5}P）を提示しました。`);
-    emitGameNotice(room, room.players.filter(x => x.playerId !== p.playerId).map(x => x.playerId), { kind:'contract', toolTarget:'contractBox', text:`${p.color.label}が公開契約を提示：達成者1人${n/5}P` });
+    log(room, `公開契約：${p.color.label}が「${condition}」契約${n}P（達成者1人${n/4}P）を提示しました。`);
+    emitGameNotice(room, room.players.filter(x => x.playerId !== p.playerId).map(x => x.playerId), { kind:'contract', toolTarget:'contractBox', text:`${p.color.label}が公開契約を提示：達成者1人${n/4}P` });
     emitState(room); safeCb(cb, { ok:true, contractId:contract.contractId });
   });
 

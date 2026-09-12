@@ -829,8 +829,8 @@ test('カード指定中は通常カードだけを指定し特殊カード併�
   assert.doesNotMatch(app, /指定者[:：]/);
 });
 
-test('公開契約は25P刻みで達成者1人につき契約ポイントの5分の1を配布する', () => {
-  assert.match(app, /reward\.min='25'; reward\.step='25'/);
+test('公開契約は20P刻みで達成者1人につき契約ポイントの4分の1を配布する', () => {
+  assert.match(app, /reward\.min='20'; reward\.step='20'/);
   assert.match(server, /validContractStake\(n, p\.points\)/);
   assert.match(server, /contractRewardPerPlayer\(contract\.reward\)/);
   assert.match(server, /contractSettlement\(contract\.reward, successCount\)/);
@@ -922,11 +922,11 @@ test('公開結果廃止後の内部対戦ログをクライアントへ配信�
   assert.doesNotMatch(html, /id="logs"/);
 });
 
-test('最終ルール文書は1位予想の終了時公開と公開契約25P刻みで統一される', () => {
+test('最終ルール文書は1位予想の終了時公開と公開契約20P刻みで統一される', () => {
   const rulesDoc = fs.readFileSync(path.join(root, 'RULES.md'), 'utf8');
   const decisions = fs.readFileSync(path.join(root, 'RULE_DECISIONS.md'), 'utf8');
   assert.match(rulesDoc, /試合終了時に全員の予想相手/);
-  assert.match(decisions, /所持P以内の25P刻み/);
+  assert.match(decisions, /所持P以内の20P刻み/);
   assert.doesNotMatch(decisions, /第1〜14ターンに、5P刻み報酬/);
 });
 
@@ -972,7 +972,7 @@ test('現行ルール文書の告発点数・契約参加人数に旧仕様が�
   assert.doesNotMatch(rulesDoc, /成功 \+30P/);
   assert.doesNotMatch(rulesDoc, /失敗 -5P/);
   assert.doesNotMatch(decisions, /受諾は1人/);
-  assert.match(decisions, /複数人が参加可能/);
+  assert.match(decisions, /最大4人が参加可能/);
   assert.match(decisions, /\*\*試合中\*\*.*本人以外へ非公開/);
   assert.match(decisions, /\*\*試合終了時\*\*.*全員へ公開/);
 });
@@ -1173,7 +1173,7 @@ test('待機室はSocket通知とHTTPポーリングの両方で人数表示の�
 
 
 test('待機室修正版はJS/CSSを新しいリビジョンで読み込み、HTML/JSの旧キャッシュを残さない', () => {
-  assert.match(html, /app\.js\?v=20260913specifytargetoutcome1/);
+  assert.match(html, /app\.js\?v=20260913contract20x41/);
   assert.match(html, /styles\.css\?v=20260912invitefix1/);
   assert.match(server, /Cache-Control', 'no-store, max-age=0'/);
   assert.match(server, /X-Gogi-Build', BUILD_ID/);
@@ -1194,7 +1194,7 @@ test('プライベート招待はiOSの直接clickで共有し失敗時は可視
   assert.match(html, /id="inviteNativeShare"/);
   assert.match(html, /id="inviteCopyLink"/);
   assert.match(css, /\.inviteDialog\{/);
-  assert.match(html, /app\.js\?v=20260913specifytargetoutcome1/);
+  assert.match(html, /app\.js\?v=20260913contract20x41/);
   assert.match(html, /styles\.css\?v=20260912invitefix1/);
 });
 

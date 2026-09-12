@@ -41,7 +41,7 @@ let joining = false;
 let manualJoinInFlight = false;
 let clockOffsetMs = 0;
 const tradeUi = { exchangeTarget:'', offerPoints:'0', offerKind:'none', offerType:'', requestPoints:'0', requestKind:'none', requestType:'' };
-const contractUi = { conditionType:'attackTarget', subjectId:'', reward:'25' };
+const contractUi = { conditionType:'attackTarget', subjectId:'', reward:'20' };
 const winnerBetUi = { targetId:'', amount:'5' };
 let draftUpdateChain = Promise.resolve();
 let operationCounter = 0;
@@ -73,7 +73,7 @@ let lobbySyncInFlight = false;
 let ignoredLobbyRoomKey = '';
 let sessionWritesBlocked = false;
 let lobbyLeavePromise = null;
-const CLIENT_BUILD_ID = '20260913-specify-target-outcome1';
+const CLIENT_BUILD_ID = '20260913-contract20x4-1';
 
 function createAudioContext() {
   if (audioContext) return audioContext;
@@ -1835,7 +1835,7 @@ function renderPublicContracts() {
             ? `第${c.dueTurn}Tに${c.issuerColor}を防御`
             : `第${c.dueTurn}Tに${c.subjectColor}を告発（成否不問）`;
       const participants = Array.isArray(c.acceptorColors) && c.acceptorColors.length ? ` / 参加：${c.acceptorColors.join('・')}` : ' / 参加：なし';
-      const text=document.createElement('span'); text.textContent=`${c.issuerColor}：${condition} / 契約${c.reward}P / 達成1人${c.rewardPerPlayer || Math.floor(c.reward/5)}P${participants}`;
+      const text=document.createElement('span'); text.textContent=`${c.issuerColor}：${condition} / 契約${c.reward}P / 達成1人${c.rewardPerPlayer || Math.floor(c.reward/4)}P${participants}`;
       row.appendChild(text);
       const joined = Array.isArray(c.acceptorIds) && c.acceptorIds.includes(me.playerId);
       if (c.status === 'open' && c.issuerId !== me.playerId && !joined) {
@@ -1868,17 +1868,17 @@ function renderPublicContracts() {
   const targetOptions=[['',type.value==='accuseTarget'?'告発する色を選択':'攻撃する色を選択'],...contractTargets];
   const subject=makeSelect(targetOptions, targetOptions.some(([v])=>v===contractUi.subjectId)?contractUi.subjectId:'', value=>{contractUi.subjectId=value;}, !canPost || !needsSubject);
   if (!needsSubject) subject.classList.add('hidden');
-  const reward=document.createElement('input'); reward.type='number'; reward.inputMode='numeric'; reward.min='25'; reward.step='25'; reward.max=String(Math.max(25,me.points)); reward.value=(Number(contractUi.reward)>=25 && Number(contractUi.reward)%25===0)?String(contractUi.reward):(me.points>=25?'25':''); reward.placeholder='契約ポイント 25P刻み'; reward.disabled=!canPost || me.points<25; reward.addEventListener('input',()=>{contractUi.reward=reward.value;});
-  const post=document.createElement('button'); post.type='button'; post.className='ghost'; post.textContent='公開契約を出す'; post.disabled=!canPost || me.points<25;
+  const reward=document.createElement('input'); reward.type='number'; reward.inputMode='numeric'; reward.min='20'; reward.step='20'; reward.max=String(Math.max(20,me.points)); reward.value=(Number(contractUi.reward)>=20 && Number(contractUi.reward)%20===0)?String(contractUi.reward):(me.points>=20?'20':''); reward.placeholder='契約ポイント 20P刻み'; reward.disabled=!canPost || me.points<20; reward.addEventListener('input',()=>{contractUi.reward=reward.value;});
+  const post=document.createElement('button'); post.type='button'; post.className='ghost'; post.textContent='公開契約を出す'; post.disabled=!canPost || me.points<20;
   post.addEventListener('click', async()=>{
-    const n=Number(reward.value); if(!Number.isInteger(n)||n<25||n%25!==0||n>state.me.points) return toast('契約ポイントは所持P以内の25P刻みで指定してください。');
+    const n=Number(reward.value); if(!Number.isInteger(n)||n<20||n%20!==0||n>state.me.points) return toast('契約ポイントは所持P以内の20P刻みで指定してください。');
     if(type.value==='attackTarget' && !subject.value) return toast('攻撃する色を選択してください。');
     if(type.value==='accuseTarget' && !subject.value) return toast('告発する色を選択してください。');
     post.disabled=true; const res=await emitMutation('postPublicContract',{conditionType:type.value,subjectId:subject.value||null,reward:n,phaseSeq:state.phaseSeq});
     if(!res.ok){toast(res.message);post.disabled=false;} else toast('公開契約を提示しました。');
   });
   creator.append(type, subject, reward, post);
-  const note=document.createElement('div'); note.className='microNote'; note.textContent='公開契約の件数制限なし。同じターンに複数件、同時に複数件提示できます。各契約は25P刻みで預けます。25Pなら達成者1人5P、50Pなら1人10P。複数人参加可。未参加・未達成分など余ったポイントは契約を出した色へ返却。ターン消費なし。'; creator.appendChild(note);
+  const note=document.createElement('div'); note.className='microNote'; note.textContent='公開契約の件数制限なし。同じターンに複数件、同時に複数件提示できます。各契約は20P刻みで預けます。20Pなら達成者1人5P、40Pなら1人10P。提示者本人は参加不可で、最大4人参加可。未参加・未達成分など余ったポイントは契約を出した色へ返却。ターン消費なし。'; creator.appendChild(note);
   box.appendChild(creator);
 }
 
